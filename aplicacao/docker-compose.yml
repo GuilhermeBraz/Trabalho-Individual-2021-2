@@ -1,13 +1,27 @@
-version: '3'
+version: '3.8'
 services:
   banco:
     image: postgres
+    container_name: "banco"
     ports:
       - "5432:5432"
-    container_name: "banco"
     volumes:
       - "./data/banco:/var/lib/postgresql/data"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     restart: always
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/trabajo
+    links:
+      - banco
+    depends_on:
+      - banco
